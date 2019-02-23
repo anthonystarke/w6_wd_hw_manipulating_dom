@@ -1,17 +1,46 @@
 document.addEventListener('DOMContentLoaded',() => {
   console.log('Jscript Loaded');
 
+  let interValSet = 0;
+
   const submitButton = document.querySelector('#new-item-form');
   submitButton.addEventListener('submit',formSubmission);
 
   const savedList = document.querySelector('#savedList');
 
+  const newItemWrapperDiv = document.createElement('div');
+  newItemWrapperDiv.classList.add('itemsWrapper');
+
+  savedList.appendChild(newItemWrapperDiv);
+
   const button = document.querySelector('#button');
   button.addEventListener('click',buttonClicked);
 
-  setInterval(updateFunc, 500);
+  const rollingButton = document.querySelector('#start-rolling');
+  rollingButton.addEventListener('click',function(){
 
+    if (interValSet === 0){
+      interValSet = startRolling()
+    } else {
+      interValSet = stopRolling(interValSet)
+    }
+  });
 });
+
+const startRolling = () => {
+
+  textInterval = setInterval(updateFunc, 500)
+  const rollingButton = document.querySelector('#start-rolling');
+  rollingButton.textContent = "Stop Rolling";
+  return textInterval;
+};
+
+const stopRolling = (interValSet) => {
+  clearInterval(interValSet);
+  const rollingButton = document.querySelector('#start-rolling');
+  rollingButton.textContent = "Start Rolling";
+  return 0;
+};
 
 const waveLetters = function(word){
 
@@ -91,32 +120,9 @@ const updateFunc = (event) => {
       secondListing[1].textContent = textToChange.map(function(word){
         return word = waveLetters(word);
       }).join(' ');
-
     }
-
-    // const mainListing = listOfItems[0].querySelector('h2');
-    // const secondListing = listOfItems[0].querySelectorAll('h3');
-    //
-    // let textToChange = secondListing[1].textContent;
-    // textToChange = textToChange.split(' ');
-    //
-    // secondListing[1].textContent = textToChange.map(function(word){
-    //   return word = waveLetters(word);
-    // }).join(' ');
-    //
-    // let mainLText = mainListing.textContent;
-    // mainLText = mainLText.split(' ');
-    //
-    // mainListing.textContent = mainLText.map(function(word){
-    //   return word = waveLetters(word);
-    // }).join(' ');
   }
-
-  // console.log("join the output",newText.join(' '));
-  // pageHeaderText.textContent = headT.join(' ');
-  // listHeader.textContent = listHeaderText.join(' ');
 }
-
 
 const buttonClicked = (event) => {
   const savedList = document.querySelector('#savedList');
@@ -134,10 +140,13 @@ const formSubmission = (event) => {
   const height = document.querySelector('#height');
   const diet = document.querySelector('#diet');
 
-  const savedList = document.querySelector('#savedList');
+  // const savedList = document.querySelector('#savedList');
   const newItemList = document.createElement('li');
-  newItemList.classList.add('itemList');
+
+  const newItemWrapperDiv = document.querySelector('div.itemsWrapper');
+
   const newItemDiv = document.createElement('div');
+  newItemDiv.classList.add('itemList');
 
   const newItemSpecies = document.createElement('h2');
   newItemSpecies.textContent = `Species: ${species.value}`;
@@ -148,9 +157,9 @@ const formSubmission = (event) => {
   const newItemDiet = document.createElement('h3');
   newItemDiet.textContent = `Diet: ${diet.value}`;
 
-  savedList.appendChild(newItemList);
+  newItemWrapperDiv.appendChild(newItemDiv);
 
-  newItemList.appendChild(newItemSpecies);
-  newItemList.appendChild(newItemHeight);
-  newItemList.appendChild(newItemDiet);
+  newItemDiv.appendChild(newItemSpecies);
+  newItemDiv.appendChild(newItemHeight);
+  newItemDiv.appendChild(newItemDiet);
 };
