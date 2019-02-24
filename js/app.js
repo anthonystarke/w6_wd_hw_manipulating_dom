@@ -13,8 +13,8 @@ document.addEventListener('DOMContentLoaded',() => {
 
   savedList.appendChild(newItemWrapperDiv);
 
-  const button = document.querySelector('#button');
-  button.addEventListener('click',buttonClicked);
+  const button = document.querySelector('#delete-button');
+  button.addEventListener('click',deleteButton);
 
   const rollingButton = document.querySelector('#start-rolling');
   rollingButton.addEventListener('click',function(){
@@ -26,6 +26,15 @@ document.addEventListener('DOMContentLoaded',() => {
     }
   });
 });
+
+const deleteButton = (event) => {
+  const savedList = document.querySelector('#savedList');
+  const listItems = document.querySelectorAll('.itemList');
+
+  for (let item of listItems){
+    savedList.removeChild(item);
+  }
+};
 
 const startRolling = () => {
 
@@ -48,8 +57,6 @@ const waveLetters = function(word){
   let upperCount = 0;
   let upperIndexPos = 0;
 
-  // console.log('Word', word);
-
   newText = word.split('').map(function(letter,index){
 
     if (letter === letter.toUpperCase() && letter !== " "){
@@ -59,7 +66,6 @@ const waveLetters = function(word){
     return letter;
 
   });
-  // console.log(upperCount, upperIndexPos);
 
   if(upperIndexPos >= (newText.length-1)){
     newText[0] = newText[0].toUpperCase();
@@ -71,36 +77,36 @@ const waveLetters = function(word){
   return newText.join('');
 };
 
-const updateFunc = (event) => {
-
+const processHeader = function(){
   const pageHeaderText = document.querySelector('h1');
-  const listHeader = document.querySelector('h2');
-  const paragraph = document.querySelector('#text-paragraph');
-  const listOfItems = document.querySelectorAll('.itemList');
-
-  // console.log("list of items",listOfItems);
-
   let headT = pageHeaderText.textContent;
-  let listHeaderText = listHeader.textContent;
-  let paragraphText = paragraph.textContent;
-
   headT = headT.split(' ');
-  listHeaderText = listHeaderText.split(' ');
-  paragraphText = paragraphText.split(' ');
-
-
   pageHeaderText.textContent = headT.map(function(word){
     return word = waveLetters(word);
   }).join(' ');
+};
+
+const processParagraph = function(){
+  const paragraph = document.querySelector('#text-paragraph');
+  let paragraphText = paragraph.textContent;
+  paragraphText = paragraphText.split(' ');
 
   paragraph.textContent = paragraphText.map(function(word){
     return word = waveLetters(word);
   }).join(' ');
+};
 
+const processListHeader = function(){
+  const listHeader = document.querySelector('h2');
+  let listHeaderText = listHeader.textContent;
+  listHeaderText = listHeaderText.split(' ');
   listHeader.textContent = listHeaderText.map(function(word){
     return word = waveLetters(word);
   }).join(' ');
+};
 
+const processListItems = function(){
+  const listOfItems = document.querySelectorAll('.itemList');
   if(listOfItems.length > 0){
 
     for(let item of listOfItems){
@@ -122,16 +128,34 @@ const updateFunc = (event) => {
       }).join(' ');
     }
   }
+};
+
+const updateFunc = (event) => {
+
+  processHeader();
+  processParagraph();
+  processListHeader();
+  processListItems();
 }
 
-const buttonClicked = (event) => {
-  const savedList = document.querySelector('#savedList');
-  const listItems = document.querySelectorAll('.itemList');
+const layoutSetupAdd = function(item1,item2,item3){
+  const newItemWrapperDiv = document.querySelector('div.itemsWrapper');
+  const newItemDiv = document.createElement('div');
+  newItemDiv.classList.add('itemList');
 
-  for (let item of listItems){
-    savedList.removeChild(item);
-  }
-};
+  newItemWrapperDiv.appendChild(newItemDiv);
+  newItemDiv.appendChild(item1);
+  newItemDiv.appendChild(item2);
+  newItemDiv.appendChild(item3);
+
+}
+
+const createSetElement = function(elementName,string){
+
+  const newItemSpecies = document.createElement(elementName);
+  newItemSpecies.textContent = string;
+  return newItemSpecies;
+}
 
 const formSubmission = (event) => {
   event.preventDefault();
@@ -140,26 +164,10 @@ const formSubmission = (event) => {
   const height = document.querySelector('#height');
   const diet = document.querySelector('#diet');
 
-  // const savedList = document.querySelector('#savedList');
-  const newItemList = document.createElement('li');
+  newItemSpecies = createSetElement('h2',`Species: ${species.value}`);
+  newItemHeight = createSetElement('h3',`Height: ${height.value}`);
+  newItemDiet = createSetElement('h3',`Diet: ${diet.value}`);
 
-  const newItemWrapperDiv = document.querySelector('div.itemsWrapper');
+  layoutSetupAdd(newItemSpecies,newItemHeight,newItemDiet);
 
-  const newItemDiv = document.createElement('div');
-  newItemDiv.classList.add('itemList');
-
-  const newItemSpecies = document.createElement('h2');
-  newItemSpecies.textContent = `Species: ${species.value}`;
-
-  const newItemHeight = document.createElement('h3');
-  newItemHeight.textContent = `Height: ${height.value}`;
-
-  const newItemDiet = document.createElement('h3');
-  newItemDiet.textContent = `Diet: ${diet.value}`;
-
-  newItemWrapperDiv.appendChild(newItemDiv);
-
-  newItemDiv.appendChild(newItemSpecies);
-  newItemDiv.appendChild(newItemHeight);
-  newItemDiv.appendChild(newItemDiet);
 };
