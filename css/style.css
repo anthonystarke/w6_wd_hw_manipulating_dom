@@ -26,3 +26,12 @@ li{
   background-color: #2196F3;
   text-align:center;
 }
+
+#form-wrapper{
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+
+}
+.form-item{
+  grid-column:auto;
+}

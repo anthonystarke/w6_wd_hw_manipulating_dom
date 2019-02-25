@@ -1,17 +1,16 @@
 document.addEventListener('DOMContentLoaded',() => {
   console.log('Jscript Loaded');
 
+  initializeListItems();
+  initializeButtons();
+
+});
+
+const initializeButtons = function(){
   let interValSet = 0;
 
   const submitButton = document.querySelector('#new-item-form');
   submitButton.addEventListener('submit',formSubmission);
-
-  const savedList = document.querySelector('#savedList');
-
-  const newItemWrapperDiv = document.createElement('div');
-  newItemWrapperDiv.classList.add('itemsWrapper');
-
-  savedList.appendChild(newItemWrapperDiv);
 
   const button = document.querySelector('#delete-button');
   button.addEventListener('click',deleteButton);
@@ -25,14 +24,20 @@ document.addEventListener('DOMContentLoaded',() => {
       interValSet = stopRolling(interValSet)
     }
   });
-});
+}
+
+const initializeListItems = function(){
+  const savedList = document.querySelector('#savedList');
+  const newItemWrapperDiv = document.createElement('div');
+  newItemWrapperDiv.classList.add('itemsWrapper');
+  savedList.appendChild(newItemWrapperDiv);
+}
 
 const deleteButton = (event) => {
-  const savedList = document.querySelector('#savedList');
+  const allItems = document.querySelector('.itemsWrapper');
   const listItems = document.querySelectorAll('.itemList');
-
   for (let item of listItems){
-    savedList.removeChild(item);
+    allItems.removeChild(item);
   }
 };
 
@@ -53,7 +58,6 @@ const stopRolling = (interValSet) => {
 
 const waveLetters = function(word){
 
-  let firstCapFound = false;
   let upperCount = 0;
   let upperIndexPos = 0;
 
@@ -64,7 +68,6 @@ const waveLetters = function(word){
       upperCount += 1;
     }
     return letter;
-
   });
 
   if(upperIndexPos >= (newText.length-1)){
